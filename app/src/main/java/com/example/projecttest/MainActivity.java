@@ -47,10 +47,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getDesieredLocation() {
-        searchView = (SearchView) findViewById(R.id.location);
+        searchView = findViewById(R.id.location);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+               // map.clear(); //clear the previous markers
                 String location = searchView.getQuery().toString();
                 List<Address> addressList = null;
                 if (location != null || !location.equals("")) {
