@@ -3,4 +3,6 @@
     <string name="map_key" translatable="false">
         AIzaSyDc-CZwYwlem8ubPokBxHl_WXlIXBq62Qs
     </string>
+
+    <string name="btn_locationString">Go</string>
 </resources>

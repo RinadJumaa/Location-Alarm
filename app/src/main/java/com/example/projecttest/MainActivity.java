@@ -10,6 +10,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -29,7 +31,8 @@ import java.util.List;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback{
     GoogleMap map;
-    SearchView searchView;
+    //SearchView searchView;
+    double startLongitude, startLatitude, endLongitude, endLatitude;
     SupportMapFragment mapFragment;
     Location currentLocation;
     FusedLocationProviderClient client; // to track current location
@@ -47,42 +50,59 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getDesieredLocation() {
-        searchView = findViewById(R.id.location);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        final SearchView searchView = findViewById(R.id.location);
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-               // map.clear(); //clear the previous markers
-                String location = searchView.getQuery().toString();
-                List<Address> addressList = null;
-                if (location != null || !location.equals("")) {
-                    //geocoder class helps adding a new marker on a new location
-                    Geocoder geocoder = new Geocoder(MainActivity.this);
-                    try {
-                        addressList = geocoder.getFromLocationName(location, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Address address = addressList.get(0);
-                    //adding the new marker
-                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    map.addMarker(new MarkerOptions().position(latLng).title(location));
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                }
-                return false;
-            }
+            public void run() {
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
+
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+                        // map.clear(); //clear the previous markers
+                        String location = searchView.getQuery().toString();
+                        List<Address> addressList = null;
+                        if (location != null || !location.equals("")) {
+                            //geocoder class helps adding a new marker on a new location
+                            Geocoder geocoder = new Geocoder(MainActivity.this);
+                            try {
+                                addressList = geocoder.getFromLocationName(location, 1);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Address address = addressList.get(0);
+                            endLatitude = address.getLatitude();
+                            endLongitude = address.getLongitude();
+                            //adding the new marker
+                            LatLng latLng = new LatLng(endLatitude, endLongitude);
+                            map.addMarker(new MarkerOptions().position(latLng).title(location));
+                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+//                            Toast.makeText(getApplicationContext(),endLatitude+ "---"
+//
+//                                    + endLongitude, Toast.LENGTH_SHORT).show();
+
+
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String s) {
+                        return false;
+                    }
+                });
+                //I wrote new OnMapReadyCallback() to not get confused with the other method below
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        map = googleMap;
+                    }
+                });
             }
         });
-        //I wrote new OnMapReadyCallback() to not get confused with the other method below
-       mapFragment.getMapAsync(new OnMapReadyCallback() {
-           @Override
-           public void onMapReady(GoogleMap googleMap) {
-               map = googleMap;
-           }
-       });
+
     }
 
     public void getMyLocation() {
@@ -105,8 +125,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     //show the latitude and longitude for the current location and display it as toast
                     Toast.makeText(getApplicationContext(),currentLocation.getLatitude()
                             + "---" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-//                    System.out.println(currentLocation.getLatitude()
-//                            + "---" + currentLocation.getLongitude());
+//
                     // get the map when everything is ready
                     mapFragment.getMapAsync(MainActivity.this);
 
@@ -118,7 +137,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        LatLng latLng = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()); // new latlng with the current location
+        startLatitude = currentLocation.getLatitude();
+        startLongitude = currentLocation.getLongitude();
+
+        LatLng latLng = new LatLng(startLatitude, startLongitude); // new latlng with the current location
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You are here");
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
@@ -140,4 +162,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    public void CalculateDistance(View view) {
+
+//        Toast.makeText(getApplicationContext(),endLatitude+ "---"
+//
+//                + endLongitude, Toast.LENGTH_SHORT).show();
+
+
+        float result[] = new float[10];
+        Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, result);
+
+        Toast.makeText(getApplicationContext(), "Distance: " + result[0], Toast.LENGTH_SHORT).show();
+
     }
+}

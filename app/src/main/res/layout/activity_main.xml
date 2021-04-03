@@ -7,19 +7,38 @@
     tools:context=".MainActivity">
 
     <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <SearchView
+        android:id="@+id/location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/location"
-        android:elevation="5dp"
-        android:queryHint="Search Location"
         android:layout_margin="10dp"
+        android:background="#FFFFFF"
+        android:elevation="5dp"
         android:iconifiedByDefault="false"
-        android:background="#FFFFFF"/>
+        android:queryHint="Search Location" />
+
+    <Button
+        android:id="@+id/btn_distance"
+        android:layout_width="68dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="316dp"
+        android:layout_marginLeft="316dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginBottom="69dp"
+        android:background="@drawable/custom_button"
+        android:onClick="CalculateDistance"
+        android:text="@string/btn_locationString"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>
