@@ -191,7 +191,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText(getApplicationContext(), "Distance: " + result[0], Toast.LENGTH_SHORT).show();
 
-        if(result[0] <= 1500){
+        if(result[0] <= 500){
             NotificationCompat.Builder builder = new NotificationCompat.Builder(
                     MainActivity.this, "arrived");
             builder.setContentTitle("Almost there");
