@@ -2,13 +2,18 @@ package com.example.projecttest;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -39,6 +44,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     Location currentLocation;
     FusedLocationProviderClient client; // to track current location
     private static final int REQUEST_CODE = 101;
+    float result[] = new float[10];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         getMyLocation();
         getDesieredLocation();
+
+        if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.O){
+            NotificationChannel channel= new NotificationChannel("arrived",
+                    "arrived to Destination", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
 
     }
 
@@ -173,12 +186,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //                + endLongitude, Toast.LENGTH_SHORT).show();
 
 
-        float result[] = new float[10];
-        //calculate the distance between current location and last searched location
-        // then show it as a toast
+
         Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, result);
 
         Toast.makeText(getApplicationContext(), "Distance: " + result[0], Toast.LENGTH_SHORT).show();
+
+        if(result[0] <= 1500){
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                    MainActivity.this, "arrived");
+            builder.setContentTitle("Almost there");
+            builder.setContentText("Keep going you are almost there");
+            builder.setSmallIcon(R.drawable.ic_launcher_background);
+            builder.setAutoCancel(true);
+
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(MainActivity.this);
+            managerCompat.notify(1, builder.build());
+        }
+
 
     }
 }
