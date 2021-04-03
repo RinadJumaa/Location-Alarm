@@ -32,6 +32,8 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback{
     GoogleMap map;
     //SearchView searchView;
+
+    // added to save the latlng for current location and last searched location
     double startLongitude, startLatitude, endLongitude, endLatitude;
     SupportMapFragment mapFragment;
     Location currentLocation;
@@ -51,6 +53,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void getDesieredLocation() {
         final SearchView searchView = findViewById(R.id.location);
+
+        // write it in a thread
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -170,6 +174,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         float result[] = new float[10];
+        //calculate the distance between current location and last searched location
+        // then show it as a toast
         Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, result);
 
         Toast.makeText(getApplicationContext(), "Distance: " + result[0], Toast.LENGTH_SHORT).show();
