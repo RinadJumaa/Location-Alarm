@@ -52,7 +52,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_main);
         client = LocationServices.getFusedLocationProviderClient(this);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        getMyLocation();
+        //getMyLocation();
+
         getDesieredLocation();
 
         if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.O){
@@ -122,34 +123,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void getMyLocation() {
-        // this if statement checks if permission to access location is accepted
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String []{
-                    Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CODE);
-            return;
-        }
-        Task<Location> task = client.getLastLocation(); // get the last location the device was in (current location)
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(final Location location) {
-                if (location != null){
-                    currentLocation = location;
-
-                    //show the latitude and longitude for the current location and display it as toast
-                    Toast.makeText(getApplicationContext(),currentLocation.getLatitude()
-                            + "---" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+//    public void getMyLocation() {
+//        // this if statement checks if permission to access location is accepted
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+//                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+//                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //
-                    // get the map when everything is ready
-                    mapFragment.getMapAsync(MainActivity.this);
-
-                }
-            }
-        });
-    }
+//            ActivityCompat.requestPermissions(this, new String []{
+//                    Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CODE);
+//            return;
+//        }
+//        Task<Location> task = client.getLastLocation(); // get the last location the device was in (current location)
+//        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+//            @Override
+//            public void onSuccess(final Location location) {
+//                if (location != null){
+//                    currentLocation = location;
+//
+//                    //show the latitude and longitude for the current location and display it as toast
+//                    Toast.makeText(getApplicationContext(),currentLocation.getLatitude()
+//                            + "---" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+////
+//                    // get the map when everything is ready
+//                    mapFragment.getMapAsync(MainActivity.this);
+//
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -166,17 +167,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    // this method checks if the permission is granted then call getmylocation method
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case REQUEST_CODE:
-                if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                    getMyLocation();
-                }
-                break;
-        }
-    }
+
 
 
     public void CalculateDistance(View view) {
@@ -205,4 +196,46 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+
+    public void My_Location(View view) {
+
+        // this if statement checks if permission to access location is accepted
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String []{
+                    Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CODE);
+            return;
+        }
+        Task<Location> task = client.getLastLocation(); // get the last location the device was in (current location)
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(final Location location) {
+                if (location != null){
+                    currentLocation = location;
+
+                    //show the latitude and longitude for the current location and display it as toast
+                    Toast.makeText(getApplicationContext(),currentLocation.getLatitude()
+                            + "---" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+//
+                    // get the map when everything is ready
+                    mapFragment.getMapAsync(MainActivity.this);
+
+                }
+            }
+        });
+    }
+
+    // this method checks if the permission is granted then call getmylocation method
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        switch (requestCode){
+//            case REQUEST_CODE:
+//                if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+//                    getMyLocation();
+//                }
+//                break;
+//        }
+//    }
 }
